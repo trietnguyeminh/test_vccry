@@ -13,6 +13,7 @@
   --line: #ddd7c8;
   --shadow: 0 14px 35px rgba(70, 66, 50, .08);
   --ring-color: var(--sage);
+  --ring-track: #fff;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; background: var(--cream); color: var(--ink); font-family: Inter, ui-rounded, "SF Pro Rounded", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -36,3 +37,44 @@ button { cursor: pointer; }
 .modal-backdrop{position:fixed;inset:0;background:rgba(48,46,39,.36);backdrop-filter:blur(4px);display:grid;place-items:center;z-index:100;padding:20px}.modal{width:min(680px,100%);background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 25px 70px rgba(0,0,0,.18)}.modal-title{display:flex;justify-content:space-between}.modal-title h2{margin:7px 0 20px}.modal-title>button{border:0;background:transparent;font-size:28px;color:var(--muted)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-grid label{font-size:12px;font-weight:800;color:#736e61}.form-grid input,.form-grid select{display:block;width:100%;margin-top:6px;border:1px solid var(--line);background:#fbf8ef;border-radius:11px;padding:11px;outline:0}.form-grid input:focus,.form-grid select:focus{border-color:#9aac89;box-shadow:0 0 0 3px rgba(127,147,104,.12)}.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:22px}.modal-actions .ghost{border:1px solid var(--line);background:#fffaf0;border-radius:12px;padding:10px 15px}.mobile-nav{display:none}
 @media (max-width: 1000px){.page-grid{grid-template-columns:1fr}.chart-panel,.summary-panel{grid-column:1}.hero-card{align-items:flex-start}.hero-rings{min-width:unset}.stat-row{grid-template-columns:1fr 1fr}.test-layout{grid-template-columns:1fr}.test-side{display:none}.kanban{grid-template-columns:1fr 1fr}.kanban-col:last-child{grid-column:1/-1}}
 @media (max-width: 760px){.app-shell{display:block}.sidebar{display:none}.content{padding:18px 14px 92px}.topbar{align-items:flex-end}.topbar h1{font-size:23px}.add-button{padding:9px 11px;font-size:12px}.hero-card{display:block;padding:20px}.hero-card h2{font-size:25px}.hero-rings{margin-top:20px;justify-content:flex-start}.ring{width:105px;height:105px}.ring-inner strong{font-size:19px}.stat-row{grid-template-columns:1fr 1fr;gap:9px}.stat-row article{padding:14px}.stat-row strong{font-size:24px}.panel{padding:14px}.vocab-toolbar{display:block}.filters{margin-top:10px}.choices{grid-template-columns:1fr}.test-card{padding:18px;min-height:550px}.question{padding-top:38px}.question h2{font-size:34px}.answer-footer{align-items:flex-end;gap:10px}.kanban{display:block}.kanban-col{margin-bottom:12px;min-height:auto}.kanban-col:last-child{grid-column:auto}.form-grid{grid-template-columns:1fr}.mobile-nav{position:fixed;bottom:0;left:0;right:0;height:72px;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(255,253,247,.95);border-top:1px solid var(--line);backdrop-filter:blur(15px);z-index:90}.mobile-nav button{border:0;background:transparent;color:#898477;display:grid;place-items:center;align-content:center;gap:2px}.mobile-nav button span{font-size:20px}.mobile-nav button small{font-size:9px}.mobile-nav button.active{color:var(--sage-dark);font-weight:900}.hero-rings{gap:12px}.legend{display:none}}
+
+:root[data-theme="space"]{
+  --cream:#05050b;--paper:#1b1730;--sage:#8b80ff;--sage-dark:#c9c5ff;--sage-soft:#30284f;
+  --yellow:#f0cf70;--yellow-soft:#3a3154;--pink:#c084fc;--pink-soft:#3c2850;
+  --ink:#f7f5ff;--muted:#b9b4d3;--line:#443b62;--ring-track:#f3f1fb;
+}
+:root[data-theme="github"]{
+  --cream:#0d1117;--paper:#161b22;--sage:#2f81f7;--sage-dark:#58a6ff;--sage-soft:#1f2d3d;
+  --yellow:#d29922;--yellow-soft:#352f1b;--pink:#bc8cff;--pink-soft:#2f2340;
+  --ink:#e6edf3;--muted:#8b949e;--line:#30363d;--ring-track:#30363d;
+}
+:root[data-theme="space"] body{
+  background-color:#05050b;
+  background-image:
+    radial-gradient(circle at 10% 20%,rgba(255,255,255,.95) 0 1px,transparent 1.4px),
+    radial-gradient(circle at 75% 15%,rgba(255,210,120,.9) 0 1px,transparent 1.5px),
+    radial-gradient(circle at 30% 75%,rgba(190,180,255,.85) 0 1px,transparent 1.4px),
+    radial-gradient(circle at 65% 60%,rgba(255,255,255,.8) 0 1px,transparent 1.3px),
+    radial-gradient(circle at 45% 35%,rgba(255,255,255,.55) 0 1px,transparent 1.2px);
+  background-size:110px 110px,170px 170px,145px 145px,210px 210px,85px 85px;
+  background-attachment:fixed;
+}
+:root[data-theme="space"] .sidebar{background:rgba(14,12,28,.88);backdrop-filter:blur(18px)}
+:root[data-theme="space"] .hero-card{background:linear-gradient(135deg,rgba(42,33,74,.96),rgba(61,46,92,.94));border-color:#51456f}
+:root[data-theme="space"] .panel,:root[data-theme="space"] .stat-row article,:root[data-theme="space"] .modal{background:rgba(27,23,48,.94)}
+:root[data-theme="space"] .table-wrap th,:root[data-theme="space"] .searchbox,:root[data-theme="space"] .filters button,:root[data-theme="space"] .speaker,:root[data-theme="space"] .choices button,:root[data-theme="space"] .kanban-col,:root[data-theme="space"] .kanban-col article,:root[data-theme="space"] .form-grid input,:root[data-theme="space"] .form-grid select{background:#292c48;color:var(--ink);border-color:#443b62}
+:root[data-theme="space"] .test-card{background:linear-gradient(180deg,#2b2246,#1b1730 48%)}
+
+:root[data-theme="github"] body{background:#0d1117;color:#e6edf3}
+:root[data-theme="github"] .sidebar{background:#010409;border-color:#21262d}
+:root[data-theme="github"] .hero-card{background:linear-gradient(135deg,#161b22,#1f2630);border-color:#30363d}
+:root[data-theme="github"] .panel,:root[data-theme="github"] .stat-row article,:root[data-theme="github"] .modal,:root[data-theme="github"] .ring-inner{background:#161b22}
+:root[data-theme="github"] .sidebar nav button.active{background:#1f6feb;color:#fff}
+:root[data-theme="github"] .add-button,:root[data-theme="github"] .hero-card button,:root[data-theme="github"] .test-start button,:root[data-theme="github"] .answer-footer button,:root[data-theme="github"] .modal-actions button:last-child{background:#238636}
+:root[data-theme="github"] .table-wrap th{background:#21262d;color:#c9d1d9}
+:root[data-theme="github"] .table-wrap td{border-bottom-color:#30363d}
+:root[data-theme="github"] .searchbox,:root[data-theme="github"] .filters button,:root[data-theme="github"] .speaker,:root[data-theme="github"] .choices button,:root[data-theme="github"] .kanban-col,:root[data-theme="github"] .kanban-col article,:root[data-theme="github"] .form-grid input,:root[data-theme="github"] .form-grid select{background:#0d1117;color:#e6edf3;border-color:#30363d}
+:root[data-theme="github"] .test-card{background:linear-gradient(180deg,#161b22,#0d1117 48%)}
+:root[data-theme="github"] .level{background:#1f2d3d;color:#58a6ff}
+.ring-wrap{text-align:center}
+.ring-wrap p{margin:8px 0 0;font-size:12px;line-height:1.3;color:var(--muted);text-align:center}
