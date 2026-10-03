@@ -50,16 +50,23 @@ function Ring({ value, total, caption, tone = "sage" }: { value: number; total: 
   );
 }
 
-function MiniChart() {
+function MiniChart({ mastered, newCount }: { mastered: number; newCount: number }) {
+  const maxValue = Math.max(4, mastered, newCount);
+  const y = (value: number) => 125 - Math.round((value / maxValue) * 80);
   return (
-    <svg className="mini-chart" viewBox="0 0 360 150" role="img" aria-label="Week on week chart">
-      {[25, 60, 95, 130].map((y) => <line key={y} x1="25" y1={y} x2="345" y2={y} stroke="#ded8c9" strokeWidth="1" />)}
-      <polyline points="35,112 190,78 335,45" fill="none" stroke="#71845b" strokeWidth="4" strokeLinecap="round" />
-      <polyline points="35,48 190,60 335,84" fill="none" stroke="#d8ae55" strokeWidth="4" strokeLinecap="round" />
-      {["35,112", "190,78", "335,45"].map((p) => { const [cx, cy] = p.split(","); return <circle key={p} cx={cx} cy={cy} r="5" fill="#71845b" />; })}
-      {["35,48", "190,60", "335,84"].map((p) => { const [cx, cy] = p.split(","); return <circle key={p} cx={cx} cy={cy} r="5" fill="#d8ae55" />; })}
-      <text x="25" y="145">W-2</text><text x="175" y="145">Last</text><text x="320" y="145">This</text>
-    </svg>
+    <>
+      <svg className="mini-chart" viewBox="0 0 360 165" role="img" aria-label="Biểu đồ tiến độ từ vựng theo tuần">
+        {[25, 60, 95, 125].map((lineY) => <line key={lineY} x1="25" y1={lineY} x2="345" y2={lineY} stroke="#ded8c9" strokeWidth="1" />)}
+        <polyline points={`35,125 190,125 335,${y(mastered)}`} fill="none" stroke="#71845b" strokeWidth="4" strokeLinecap="round" />
+        <polyline points={`35,125 190,125 335,${y(newCount)}`} fill="none" stroke="#d8ae55" strokeWidth="4" strokeLinecap="round" />
+        <circle cx="335" cy={y(mastered)} r="5" fill="#71845b" />
+        <circle cx="335" cy={y(newCount)} r="4" fill="#d8ae55" />
+        <text x="24" y="158">2 tuần trước</text><text x="160" y="158">Tuần trước</text><text x="305" y="158">Tuần này</text>
+      </svg>
+      <div className="chart-note">
+        <b>● Xanh:</b> số từ đã Mastered · <b>● Vàng:</b> số từ mới. Hai tuần cũ đang bằng 0 vì V1 chưa lưu lịch sử theo tuần.
+      </div>
+    </>
   );
 }
 
@@ -184,7 +191,7 @@ export default function Page() {
         <header className="topbar"><div><span className="eyebrow">FRIDAY · OCT 03</span><h1>{tab === "home" ? "Study Dashboard" : navItems.find(n => n.key === tab)?.label}</h1></div><button className="add-button" onClick={() => setShowAdd(true)}>＋ Add word</button></header>
 
         {tab === "home" && <div className="page-grid">
-          <section className="hero-card"><div><span className="pill">THIS WEEK</span><h2>You're growing nicely 🌿</h2><p>Giữ nhịp học nhẹ nhưng đều. Bạn đang có <b>{stats.mastered}</b> từ đã thuộc.</p><button onClick={() => { setTab("test"); startTest(); }}>Start quick test →</button></div><div className="hero-rings"><Ring value={31} total={35} caption="Weekly target" /><Ring value={44} total={200} caption="Monthly target" tone="yellow" /></div></section>
+          <section className="hero-card"><div><span className="pill">THIS WEEK</span><h2>You're growing nicely 🌿</h2><p>Giữ nhịp học nhẹ nhưng đều. Bạn đang có <b>{stats.mastered}</b> từ đã thuộc.</p><button onClick={() => { setTab("test"); startTest(); }}>Start quick test →</button></div><div className="hero-rings"><Ring value={31} total={35} caption="31 từ đã học / mục tiêu 35 từ trong tuần" /><Ring value={44} total={200} caption="44 từ đã học / mục tiêu 200 từ trong tháng" tone="yellow" /></div></section>
 
           <div className="stat-row">
             <article><span>Total vocab</span><strong>{stats.total}</strong><small>in your library</small></article>
@@ -193,7 +200,7 @@ export default function Page() {
             <article><span>Avg. mastery</span><strong>{stats.avgMastery}%</strong><small>overall score</small></article>
           </div>
 
-          <section className="panel chart-panel"><div className="section-title"><div><span className="pill green">WEEK-ON-WEEK</span><h3>Vocabulary progress</h3></div><div className="legend"><i className="dot sage" /> Completed <i className="dot yellow" /> New vocab</div></div><MiniChart /></section>
+          <section className="panel chart-panel"><div className="section-title"><div><span className="pill green">WEEK-ON-WEEK</span><h3>Vocabulary progress</h3></div><div className="legend"><i className="dot sage" /> Completed <i className="dot yellow" /> New vocab</div></div><MiniChart mastered={stats.mastered} newCount={stats.newCount} /></section>
 
           <section className="panel summary-panel"><div className="section-title"><div><span className="pill pink">TODAY</span><h3>Quick summary</h3></div></div><div className="summary-list"><div><span>Words to review</span><b>16</b></div><div><span>New words</span><b>{stats.newCount}</b></div><div><span>Average study time</span><b>6m 24s</b></div><div><span>Accuracy</span><b>89%</b></div></div></section>
 
