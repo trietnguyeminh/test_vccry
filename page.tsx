@@ -45,7 +45,7 @@ function Ring({ value, total, caption, tone = "sage" }: { value: number; total: 
   return (
     <div className="ring-wrap">
       <div className={`ring ${tone}`} style={{ background: `conic-gradient(var(--ring-color) ${p * 3.6}deg, #fff ${p * 3.6}deg)` }}>
-        <div className="ring-inner"><strong>{value}/{total}</strong><span>{p}%</span></div>
+        <div className="ring-inner"><strong>{value}/{total}</strong></div>
       </div>
       <p>{caption}</p>
     </div>
@@ -79,6 +79,8 @@ export default function Page() {
   const [filter, setFilter] = useState<"All" | Status>("All");
   const [showAdd, setShowAdd] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [theme, setTheme] = useState("professional");
+  const [textColor, setTextColor] = useState("#243238");
 
   const [testIndex, setTestIndex] = useState(0);
   const [testScore, setTestScore] = useState(0);
@@ -91,6 +93,11 @@ export default function Page() {
     if (saved) {
       try { setWords(JSON.parse(saved)); } catch { /* ignore malformed local data */ }
     }
+    const savedTheme = localStorage.getItem("vg-theme") || "professional";
+    const savedColor = localStorage.getItem("vg-text-color") || "#243238";
+    setTheme(savedTheme); setTextColor(savedColor);
+    document.documentElement.dataset.theme = savedTheme;
+    document.documentElement.style.setProperty("--ink", savedColor);
     setHydrated(true);
   }, []);
 
@@ -191,7 +198,7 @@ export default function Page() {
       </aside>
 
       <section className="content">
-        <header className="topbar"><div><span className="eyebrow">FRIDAY · OCT 03</span><h1>{tab === "home" ? "Study Dashboard" : navItems.find(n => n.key === tab)?.label}</h1></div><button className="add-button" onClick={() => setShowAdd(true)}>＋ Add word</button></header>
+        <header className="topbar"><div><span className="eyebrow">FRIDAY · OCT 03</span><h1>{tab === "home" ? "Study Dashboard" : navItems.find(n => n.key === tab)?.label}</h1></div><div style={{display:"flex",gap:10,alignItems:"center"}}><select value={theme} onChange={e=>{const v=e.target.value;setTheme(v);document.documentElement.dataset.theme=v;localStorage.setItem("vg-theme",v)}}><option value="feminine">Nữ tính</option><option value="space">Vũ trụ</option><option value="cartoon">Hoạt hình</option><option value="professional">Chuyên môn</option><option value="github">GitHub</option></select><input aria-label="Màu chữ" type="color" value={textColor} onChange={e=>{setTextColor(e.target.value);document.documentElement.style.setProperty("--ink",e.target.value);localStorage.setItem("vg-text-color",e.target.value)}}/><button className="add-button" onClick={() => setShowAdd(true)}>＋ Add word</button></div></header>
 
         {tab === "home" && <div className="page-grid">
           <section className="hero-card"><div><span className="pill">THIS WEEK</span><h2>You're growing nicely 🌿</h2><p>Giữ nhịp học nhẹ nhưng đều. Bạn đang có <b>{stats.mastered}</b> từ đã thuộc.</p><button onClick={() => { setTab("test"); startTest(); }}>Start quick test →</button></div><div className="hero-rings"><Ring value={31} total={35} caption="89% mục tiêu tuần" /><Ring value={44} total={200} caption="22% mục tiêu tháng" tone="yellow" /></div></section>
