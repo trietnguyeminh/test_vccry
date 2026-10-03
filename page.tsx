@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 
 type Status = "New" | "Learning" | "Mastered";
 type Priority = "High" | "Medium" | "Low";
+type Level = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
 
 type Word = {
   id: number;
@@ -13,6 +14,7 @@ type Word = {
   meaning: string;
   topic: string;
   priority: Priority;
+  level: Level;
   status: Status;
   dateAdded: string;
   mastery: number;
@@ -21,14 +23,14 @@ type Word = {
 type Tab = "home" | "words" | "test" | "tracking";
 
 const seedWords: Word[] = [
-  { id: 1, word: "Legitimate", ipa: "/lɪˈdʒɪtɪmət/", type: "Adjective", meaning: "Hợp pháp, chính đáng", topic: "Society", priority: "Medium", status: "Mastered", dateAdded: "17/08/26", mastery: 100 },
-  { id: 2, word: "Take responsibility", ipa: "/teɪk rɪˌspɒnsəˈbɪləti/", type: "Verb phrase", meaning: "Chịu trách nhiệm", topic: "Work", priority: "High", status: "Mastered", dateAdded: "17/08/26", mastery: 100 },
-  { id: 3, word: "Make progress", ipa: "/meɪk ˈprəʊɡres/", type: "Verb phrase", meaning: "Tiến bộ", topic: "Education", priority: "Medium", status: "Learning", dateAdded: "01/09/26", mastery: 68 },
-  { id: 4, word: "Pay attention", ipa: "/peɪ əˈtenʃn/", type: "Verb phrase", meaning: "Chú ý", topic: "Education", priority: "High", status: "Learning", dateAdded: "01/09/26", mastery: 54 },
-  { id: 5, word: "Raise awareness", ipa: "/reɪz əˈweənəs/", type: "Verb phrase", meaning: "Nâng cao nhận thức", topic: "Society", priority: "High", status: "Learning", dateAdded: "02/09/26", mastery: 47 },
-  { id: 6, word: "Break the law", ipa: "/breɪk ðə lɔː/", type: "Verb phrase", meaning: "Phạm luật", topic: "Society", priority: "Medium", status: "New", dateAdded: "03/09/26", mastery: 10 },
-  { id: 7, word: "Conscientious", ipa: "/ˌkɒnʃiˈenʃəs/", type: "Adjective", meaning: "Tận tâm, có lương tâm", topic: "Work", priority: "High", status: "New", dateAdded: "04/09/26", mastery: 8 },
-  { id: 8, word: "Abandon", ipa: "/əˈbændən/", type: "Verb", meaning: "Từ bỏ, bỏ lại", topic: "Society", priority: "Medium", status: "Mastered", dateAdded: "04/09/26", mastery: 94 }
+  { id: 1, word: "Legitimate", ipa: "/lɪˈdʒɪtɪmət/", type: "Adjective", meaning: "Hợp pháp, chính đáng", topic: "Society", level: "B2", priority: "Medium", status: "Mastered", dateAdded: "17/08/26", mastery: 100 },
+  { id: 2, word: "Take responsibility", ipa: "/teɪk rɪˌspɒnsəˈbɪləti/", type: "Verb phrase", meaning: "Chịu trách nhiệm", topic: "Work", level: "B1", priority: "High", status: "Mastered", dateAdded: "17/08/26", mastery: 100 },
+  { id: 3, word: "Make progress", ipa: "/meɪk ˈprəʊɡres/", type: "Verb phrase", meaning: "Tiến bộ", topic: "Education", level: "B1", priority: "Medium", status: "Learning", dateAdded: "01/09/26", mastery: 68 },
+  { id: 4, word: "Pay attention", ipa: "/peɪ əˈtenʃn/", type: "Verb phrase", meaning: "Chú ý", topic: "Education", level: "B1", priority: "High", status: "Learning", dateAdded: "01/09/26", mastery: 54 },
+  { id: 5, word: "Raise awareness", ipa: "/reɪz əˈweənəs/", type: "Verb phrase", meaning: "Nâng cao nhận thức", topic: "Society", level: "B2", priority: "High", status: "Learning", dateAdded: "02/09/26", mastery: 47 },
+  { id: 6, word: "Break the law", ipa: "/breɪk ðə lɔː/", type: "Verb phrase", meaning: "Phạm luật", topic: "Society", level: "B1", priority: "Medium", status: "New", dateAdded: "03/09/26", mastery: 10 },
+  { id: 7, word: "Conscientious", ipa: "/ˌkɒnʃiˈenʃəs/", type: "Adjective", meaning: "Tận tâm, có lương tâm", topic: "Work", level: "C1", priority: "High", status: "New", dateAdded: "04/09/26", mastery: 8 },
+  { id: 8, word: "Abandon", ipa: "/əˈbændən/", type: "Verb", meaning: "Từ bỏ, bỏ lại", topic: "Society", level: "B2", priority: "Medium", status: "Mastered", dateAdded: "04/09/26", mastery: 94 }
 ];
 
 const navItems: { key: Tab; label: string; icon: string }[] = [
@@ -105,7 +107,7 @@ export default function Page() {
   }), [words]);
 
   const filteredWords = useMemo(() => words.filter(w => {
-    const okSearch = `${w.word} ${w.meaning} ${w.topic}`.toLowerCase().includes(search.toLowerCase());
+    const okSearch = `${w.word} ${w.meaning} ${w.topic} ${w.level}`.toLowerCase().includes(search.toLowerCase());
     const okFilter = filter === "All" || w.status === filter;
     return okSearch && okFilter;
   }), [words, search, filter]);
@@ -130,6 +132,7 @@ export default function Page() {
       type: String(fd.get("type") || "").trim(),
       meaning: String(fd.get("meaning") || "").trim(),
       topic: String(fd.get("topic") || "General").trim(),
+      level: (fd.get("level") as Level) || "B1",
       priority: (fd.get("priority") as Priority) || "Medium",
       status: "New",
       mastery: 0,
@@ -191,7 +194,7 @@ export default function Page() {
         <header className="topbar"><div><span className="eyebrow">FRIDAY · OCT 03</span><h1>{tab === "home" ? "Study Dashboard" : navItems.find(n => n.key === tab)?.label}</h1></div><button className="add-button" onClick={() => setShowAdd(true)}>＋ Add word</button></header>
 
         {tab === "home" && <div className="page-grid">
-          <section className="hero-card"><div><span className="pill">THIS WEEK</span><h2>You're growing nicely 🌿</h2><p>Giữ nhịp học nhẹ nhưng đều. Bạn đang có <b>{stats.mastered}</b> từ đã thuộc.</p><button onClick={() => { setTab("test"); startTest(); }}>Start quick test →</button></div><div className="hero-rings"><Ring value={31} total={35} caption="31 từ đã học / mục tiêu 35 từ trong tuần" /><Ring value={44} total={200} caption="44 từ đã học / mục tiêu 200 từ trong tháng" tone="yellow" /></div></section>
+          <section className="hero-card"><div><span className="pill">THIS WEEK</span><h2>You're growing nicely 🌿</h2><p>Giữ nhịp học nhẹ nhưng đều. Bạn đang có <b>{stats.mastered}</b> từ đã thuộc.</p><button onClick={() => { setTab("test"); startTest(); }}>Start quick test →</button></div><div className="hero-rings"><Ring value={31} total={35} caption="89% mục tiêu tuần" /><Ring value={44} total={200} caption="22% mục tiêu tháng" tone="yellow" /></div></section>
 
           <div className="stat-row">
             <article><span>Total vocab</span><strong>{stats.total}</strong><small>in your library</small></article>
@@ -204,12 +207,12 @@ export default function Page() {
 
           <section className="panel summary-panel"><div className="section-title"><div><span className="pill pink">TODAY</span><h3>Quick summary</h3></div></div><div className="summary-list"><div><span>Words to review</span><b>16</b></div><div><span>New words</span><b>{stats.newCount}</b></div><div><span>Average study time</span><b>6m 24s</b></div><div><span>Accuracy</span><b>89%</b></div></div></section>
 
-          <section className="panel wide"><div className="section-title"><div><span className="pill yellow">RECENT VOCAB</span><h3>Continue learning</h3></div><button className="text-button" onClick={() => setTab("words")}>View all →</button></div><div className="table-wrap"><table><thead><tr><th>Word</th><th>Meaning</th><th>Topic</th><th>Priority</th><th>Progress</th><th>Status</th></tr></thead><tbody>{words.slice(0, 6).map(w => <tr key={w.id}><td><b>{w.word}</b><small>{w.ipa}</small></td><td>{w.meaning}</td><td>{w.topic}</td><td><span className={`priority ${w.priority.toLowerCase()}`}>{w.priority}</span></td><td><div className="cell-progress"><i style={{ width: `${w.mastery}%` }} /></div><small>{w.mastery}%</small></td><td><span className={`status ${w.status.toLowerCase()}`}>{w.status}</span></td></tr>)}</tbody></table></div></section>
+          <section className="panel wide"><div className="section-title"><div><span className="pill yellow">RECENT VOCAB</span><h3>Continue learning</h3></div><button className="text-button" onClick={() => setTab("words")}>View all →</button></div><div className="table-wrap"><table><thead><tr><th>Word</th><th>Meaning</th><th>Topic</th><th>CEFR</th><th>Priority</th><th>Progress</th><th>Status</th></tr></thead><tbody>{words.slice(0, 6).map(w => <tr key={w.id}><td><b>{w.word}</b><small>{w.ipa}</small></td><td>{w.meaning}</td><td>{w.topic}</td><td><span className="level">{w.level}</span></td><td><span className={`priority ${w.priority.toLowerCase()}`}>{w.priority}</span></td><td><div className="cell-progress"><i style={{ width: `${w.mastery}%` }} /></div><small>{w.mastery}%</small></td><td><span className={`status ${w.status.toLowerCase()}`}>{w.status}</span></td></tr>)}</tbody></table></div></section>
         </div>}
 
         {tab === "words" && <div className="page-stack">
           <section className="panel vocab-toolbar"><div className="searchbox">⌕<input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search word, meaning or topic..." /></div><div className="filters">{(["All", "New", "Learning", "Mastered"] as const).map(f => <button key={f} className={filter === f ? "selected" : ""} onClick={() => setFilter(f)}>{f}</button>)}</div></section>
-          <section className="panel"><div className="section-title"><div><span className="pill green">VOCAB LIST</span><h3>{filteredWords.length} vocabulary items</h3></div></div><div className="table-wrap full"><table><thead><tr><th>🔊</th><th>Vocabulary</th><th>Phonetic</th><th>Word type</th><th>Meaning</th><th>Topic</th><th>Priority</th><th>Date added</th><th>Mastery</th><th>Status</th></tr></thead><tbody>{filteredWords.map(w => <tr key={w.id}><td><button className="speaker" onClick={() => speak(w.word)}>▶</button></td><td><b>{w.word}</b></td><td>{w.ipa}</td><td>{w.type}</td><td>{w.meaning}</td><td>{w.topic}</td><td><span className={`priority ${w.priority.toLowerCase()}`}>{w.priority}</span></td><td>{w.dateAdded}</td><td><b>{w.mastery}%</b></td><td><span className={`status ${w.status.toLowerCase()}`}>{w.status}</span></td></tr>)}</tbody></table></div></section>
+          <section className="panel"><div className="section-title"><div><span className="pill green">VOCAB LIST</span><h3>{filteredWords.length} vocabulary items</h3></div></div><div className="table-wrap full"><table><thead><tr><th>🔊</th><th>Vocabulary</th><th>Phonetic</th><th>Word type</th><th>Meaning</th><th>Topic</th><th>CEFR</th><th>Priority</th><th>Date added</th><th>Mastery</th><th>Status</th></tr></thead><tbody>{filteredWords.map(w => <tr key={w.id}><td><button className="speaker" onClick={() => speak(w.word)}>▶</button></td><td><b>{w.word}</b></td><td>{w.ipa}</td><td>{w.type}</td><td>{w.meaning}</td><td>{w.topic}</td><td><span className="level">{w.level}</span></td><td><span className={`priority ${w.priority.toLowerCase()}`}>{w.priority}</span></td><td>{w.dateAdded}</td><td><b>{w.mastery}%</b></td><td><span className={`status ${w.status.toLowerCase()}`}>{w.status}</span></td></tr>)}</tbody></table></div></section>
         </div>}
 
         {tab === "test" && <div className="test-layout">
@@ -229,7 +232,7 @@ export default function Page() {
 
       <nav className="mobile-nav">{navItems.map(item => <button key={item.key} onClick={() => setTab(item.key)} className={tab === item.key ? "active" : ""}><span>{item.icon}</span><small>{item.label}</small></button>)}</nav>
 
-      {showAdd && <div className="modal-backdrop" onMouseDown={() => setShowAdd(false)}><form className="modal" onSubmit={addWord} onMouseDown={e => e.stopPropagation()}><div className="modal-title"><div><span className="pill green">NEW VOCAB</span><h2>Add a new word</h2></div><button type="button" onClick={() => setShowAdd(false)}>×</button></div><div className="form-grid"><label>Vocabulary<input name="word" required placeholder="e.g. abandon" autoFocus /></label><label>IPA<input name="ipa" placeholder="/əˈbændən/" /></label><label>Word type<input name="type" placeholder="Verb" /></label><label>Meaning<input name="meaning" required placeholder="Từ bỏ, bỏ lại" /></label><label>Topic<input name="topic" placeholder="Society" /></label><label>Priority<select name="priority" defaultValue="Medium"><option>High</option><option>Medium</option><option>Low</option></select></label></div><div className="modal-actions"><button type="button" className="ghost" onClick={() => setShowAdd(false)}>Cancel</button><button type="submit">Save vocabulary</button></div></form></div>}
+      {showAdd && <div className="modal-backdrop" onMouseDown={() => setShowAdd(false)}><form className="modal" onSubmit={addWord} onMouseDown={e => e.stopPropagation()}><div className="modal-title"><div><span className="pill green">NEW VOCAB</span><h2>Add a new word</h2></div><button type="button" onClick={() => setShowAdd(false)}>×</button></div><div className="form-grid"><label>Vocabulary<input name="word" required placeholder="e.g. abandon" autoFocus /></label><label>IPA<input name="ipa" placeholder="/əˈbændən/" /></label><label>Word type<input name="type" placeholder="Verb" /></label><label>Meaning<input name="meaning" required placeholder="Từ bỏ, bỏ lại" /></label><label>Topic<input name="topic" placeholder="Society" /></label><label>CEFR level<select name="level" defaultValue="B1"><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option><option>C2</option></select></label><label>Priority<select name="priority" defaultValue="Medium"><option>High</option><option>Medium</option><option>Low</option></select></label></div><div className="modal-actions"><button type="button" className="ghost" onClick={() => setShowAdd(false)}>Cancel</button><button type="submit">Save vocabulary</button></div></form></div>}
     </main>
   );
 }
